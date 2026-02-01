@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FF i don't know v1.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin:0; padding:0; font-family: 'Courier New', monospace; }
+        body { background: #000; color: #0f0; }
+        .container { max-width: 800px; margin: auto; padding: 20px; }
+        .header { text-align: center; border-bottom: 2px solid #0f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .status { background: #111; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .btn { background: #0a0; color: #000; border: none; padding: 12px; border-radius: 3px; cursor: pointer; font-weight: bold; }
+        .btn:hover { background: #0f0; }
+        .slider-container { margin: 15px 0; }
+        .log { background: #111; height: 200px; overflow-y: auto; padding: 10px; margin-top: 20px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 FF ATTACK v1.0</h1>
+            <p>By i don't know | Ultimate Aim Control Panel</p>
+        </div>
+        
+        <div class="status" id="status">
+            <strong>Status:</strong> <span id="statusText">🔴 OFFLINE</span><br>
+            <strong>Target:</strong> <span id="target">None</span><br>
+            <strong>Lock Mode:</strong> <span id="lockMode">HEAD</span>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="connect()">🟢 CONNECT TO GAME</button>
+            <button class="btn" onclick="toggleAim()">🎯 TOGGLE AIM LOCK (HEAD)</button>
+            <button class="btn" onclick="changeMode('head')">💀 HEAD ONLY</button>
+            <button class="btn" onclick="changeMode('body')">🎯 Aim lock body</button>
+            <button class="btn" onkick="panic()">🚨 PANIC MODE (OFF)</button>
+        </div>
+
+        <div class="slider-container">
+            <label><strong>Smoothness:</strong> <span id="smoothValue">50%</span></label><br>
+            <input type="range" min="1" max="100" value="50" class="slider" id="smooth">
+        </div>
+
+        <div class="slider-container">
+            <label><strong>SENSI (SENSIVITAS):</strong> <span id="fovValue">120°</span></label><br>
+            <input type="range" min="10" max="360" value="120" class="slider" id="fov">
+        </div>
+
+        <div class="log" id="log">
+            [LOG] System initialized. Ready for commands.<br>
+        </div>
+    </div>
+
+    <script>
+        let connected = false;
+        let aimActive = false;
+        let mode = "head";
+
+        function log(msg) {
+            document.getElementById('log').innerHTML += `[${new Date().toLocaleTimeString()}] ${msg}<br>`;
+            document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
+        }
+
+        function connect() {
+            connected = true;
+            document.getElementById('statusText').innerHTML = '🟢 CONNECTED';
+            document.getElementById('statusText').style.color = '#0f0';
+            log('Connected to game process.');
+        }
+
+        function toggleAim() {
+            aimActive = !aimActive;
+            log(`Aim Lock ${aimActive ? 'ACTIVATED' : 'DEACTIVATED'} (${mode} target)`);
+        }
+
+        function changeMode(newMode) {
+            mode = newMode;
+            document.getElementById('lockMode').innerHTML = newMode.toUpperCase();
+            log(`Target mode changed to: ${newMode}`);
+        }
+
+        function panic() {
+            aimActive = false;
+            connected = false;
+            document.getElementById('statusText').innerHTML = '🔴 OFFLINE';
+            log('PANIC MODE - All features disabled.');
+        }
+
+        // Sliders
+        document.getElementById('smooth').oninput = function() {
+            document.getElementById('smoothValue').innerHTML = this.value + '%';
+        }
+
+        document.getElementById('fov').oninput = function() {
+            document.getElementById('fovValue').innerHTML = this.value + '°';
+        }
+
+        // Simulate aimbot calculations
+        setInterval(() => {
+            if (connected && aimActive) {
+                document.getElementById('target').innerHTML = `ENEMY_${Math.floor(Math.random()*1000)} (${mode.toUpperCase()})`;
+            } else {
+                document.getElementById('target').innerHTML = 'None';
+            }
+        }, 500);
+    </script>
+</body>
+</html>
